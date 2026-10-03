@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="gu" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STRIMHUB - Premium Video Streaming Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif']
+          },
+          colors: {
+            primary: '#ff1744',
+            'primary-dark': '#d50000',
+            obsidian: '#0b0f19',
+            surface: '#121826',
+            cardBg: '#182032',
+            borderLine: '#232d42'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Modern sleek scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232d42;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff1744;
+    }
+
+    /* Video player protect from direct inspect/save */
+    video::-internal-media-controls-download-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls-enclosure {
+      overflow: hidden;
+    }
+    video::-webkit-media-controls-panel {
+      width: calc(100% + 30px);
+    }
+    
+    .glass-nav {
+      background: rgba(18, 24, 38, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-primary selection:text-white">
+
+  <header class="sticky top-0 z-40 w-full glass-nav px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-2xl">
+    <div class="flex items-center space-x-3">
+      <!-- 5-Click Secret Admin Logo -->
+      <div id="secretLogo" class="flex items-center space-x-2.5 cursor-pointer select-none group" title="Click 5 times for Admin Panel">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-orange-500 flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform duration-200">
+          <i class="fa-solid fa-play text-sm ml-0.5"></i>
+        </div>
+        <span class="text-2xl font-black font-display tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-gray-400 group-hover:from-white group-hover:to-primary transition-all">
+          STRIM<span class="text-primary">HUB</span>
+        </span>
+      </div>
+      <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-red-950/80 border border-red-800/50 text-red-400">
+        4K ULTRA HD
+      </span>
+    </div>
+
+    <!-- Quick Navigation & Admin Manual Trigger -->
+    <div class="flex items-center space-x-3">
+      <button onclick="navigateHome()" class="px-4 py-1.5 rounded-full bg-surface hover:bg-cardBg border border-borderLine text-xs font-semibold flex items-center gap-2 text-gray-200 hover:text-primary transition active:scale-95">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button onclick="openAdminLogin()" class="p-2 rounded-full bg-surface hover:bg-cardBg border border-borderLine text-gray-400 hover:text-white transition" title="Admin Login">
+        <i class="fa-solid fa-shield-halved text-sm"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="w-full flex flex-col items-center pt-3 px-2">
+    <span class="text-[10px] uppercase font-semibold text-gray-500 tracking-wider mb-1">Sponsored Advertisement</span>
+    <div id="headerAdWrapper" class="w-full max-w-[728px] min-h-[90px] rounded-xl overflow-hidden border border-borderLine bg-surface/50 flex items-center justify-center shadow-lg transition-all">
+      <!-- Dynamic Ad Iframe will be injected here -->
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow">
+
+    <!-- VIEW 1: HOME VIDEO GALLERY -->
+    <section id="homeView" class="space-y-6">
+      <div class="flex items-center justify-between pb-3 border-b border-borderLine">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-fire text-primary text-lg"></i>
+          <h2 class="text-lg md:text-xl font-bold font-display text-white tracking-wide">Featured Video Streams</h2>
+        </div>
+        <span id="videoCountBadge" class="text-xs bg-surface text-gray-400 px-3 py-1 rounded-full border border-borderLine">
+          Connecting...
+        </span>
+      </div>
+
+      <!-- Responsive Grid: 2 columns on mobile, 4 columns on desktop -->
+      <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+        <!-- Videos injected dynamically via JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="noVideosPlaceholder" class="hidden text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-surface flex items-center justify-center mx-auto text-gray-500 mb-3 border border-borderLine">
+          <i class="fa-solid fa-film text-2xl"></i>
+        </div>
+        <h3 class="text-base font-semibold text-gray-200">No Videos Found</h3>
+        <p class="text-xs text-gray-400 mt-1 max-w-sm mx-auto">Click the STRIMHUB logo 5 times to open the admin panel and add streaming videos.</p>
+      </div>
+    </section>
+
+    <!-- VIEW 2: WATCH PLAYER & RELATED VIDEOS -->
+    <section id="watchView" class="hidden space-y-8 animate-fade-in">
+      <div class="flex items-center space-x-2 text-xs text-gray-400">
+        <button onclick="navigateHome()" class="hover:text-primary transition flex items-center gap-1.5 font-medium">
+          <i class="fa-solid fa-arrow-left"></i> Back to Gallery
+        </button>
+        <span>/</span>
+        <span id="breadcrumbTitle" class="text-gray-200 font-medium truncate max-w-xs md:max-w-md">Playing Stream</span>
+      </div>
+
+      <!-- Main Video Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+        
+        <!-- Left: Video Player Box -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-borderLine aspect-video group">
+            
+            <!-- Video Tag (Direct download disabled) -->
+            <video id="mainVideoPlayer" 
+                   class="w-full h-full object-contain" 
+                   controls 
+                   controlsList="nodownload" 
+                   disablePictureInPicture
+                   oncontextmenu="return false;"
+                   playsinline>
+              Your browser does not support the video tag.
+            </video>
+
+            <!-- 320x50 Ad Overlay Container -->
+            <div id="playerAdOverlay" class="absolute inset-0 bg-black/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 transition-all">
+              <div class="w-full max-w-sm bg-surface border border-borderLine rounded-2xl p-4 shadow-2xl text-center space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] tracking-wider uppercase bg-primary/20 text-primary font-bold px-2 py-0.5 rounded">
+                    Sponsor Ad
+                  </span>
+                  <span class="text-xs text-gray-400">Wait to continue</span>
+                </div>
+
+                <!-- 320x50 Ad Banner Slot -->
+                <div id="player320AdWrapper" class="w-[320px] h-[50px] mx-auto bg-black rounded-lg border border-borderLine overflow-hidden flex items-center justify-center shadow-inner">
+                  <!-- Injected via Sandbox Iframe -->
+                </div>
+
+                <p class="text-[11px] text-gray-400">Click below to unlock fast stream playback.</p>
+
+                <!-- Close Ad & Play Button -->
+                <button onclick="closeAdAndPlayVideo()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-primary-dark hover:to-orange-700 text-white font-bold text-xs uppercase tracking-wide shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition active:scale-95">
+                  <i class="fa-solid fa-play text-xs"></i>
+                  <span>Close Ad & Play Video</span>
+                  <i class="fa-solid fa-xmark text-sm ml-1"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Video Details and Dedicated Download Button -->
+          <div class="bg-surface/80 border border-borderLine p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+            <div class="space-y-1">
+              <h1 id="activeVideoTitle" class="text-lg sm:text-xl font-bold font-display text-white">Stream</h1>
+              <p class="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check"></i> High Speed Video Ready
+              </p>
+            </div>
+
+            <!-- Custom Download Button (Assigned from Admin Panel) -->
+            <button id="downloadBtn" onclick="handleDownloadClick()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-2 transition active:scale-95">
+              <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+              <span>Download Video</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Related Videos Section (2-Column Grid as Requested) -->
+        <div class="lg:col-span-1 space-y-3">
+          <div class="flex items-center justify-between pb-1 border-b border-borderLine">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-primary"></i>
+              <span>Related Videos</span>
+            </h3>
+            <span class="text-[11px] text-gray-500">Auto Next</span>
+          </div>
+
+          <!-- 2 Columns Grid: | Redment video| | Redment video| -->
+          <div id="relatedVideosGrid" class="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-1">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div class="w-full flex flex-col items-center pb-4 px-2">
+    <span class="text-[10px] uppercase font-semibold text-gray-500 tracking-wider mb-1">Sponsored Advertisement</span>
+    <div id="footerAdWrapper" class="w-full max-w-[728px] min-h-[90px] rounded-xl overflow-hidden border border-borderLine bg-surface/50 flex items-center justify-center shadow-lg transition-all">
+      <!-- Dynamic Ad Iframe will be injected here -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-borderLine bg-[#080b12] py-5 px-4 text-center text-xs text-gray-500 space-y-1">
+    <p>© 2026 STRIMHUB. Fast, secure, and modern video streaming hub.</p>
+    <p class="text-[11px] text-gray-600">All media links are externally indexed via public archives.</p>
+  </footer>
+
+  <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-surface border border-borderLine w-full max-w-sm rounded-2xl p-6 shadow-2xl relative space-y-4">
+      <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 text-primary flex items-center justify-center mx-auto text-xl mb-2">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white font-display">Admin Authentication</h3>
+        <p class="text-xs text-gray-400">Enter credentials to unlock STRIMHUB control</p>
+      </div>
+
+      <form id="adminLoginForm" onsubmit="verifyAdminLogin(event)" class="space-y-3 pt-2">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Username</label>
+          <input type="text" id="adminUser" required placeholder="Enter username" 
+                 class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
+          <input type="password" id="adminPass" required placeholder="Enter password" 
+                 class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+        </div>
+        <p id="loginError" class="text-red-400 text-xs hidden text-center font-medium">Khotu Username athva Password!</p>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-primary hover:bg-primary-dark font-bold text-xs text-white tracking-wide shadow-lg shadow-primary/25 transition">
+          Unlock Admin Panel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-2 sm:p-5 overflow-y-auto">
+    <div class="bg-surface border border-borderLine w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+      
+      <!-- Panel Header -->
+      <div class="px-5 py-4 border-b border-borderLine flex items-center justify-between bg-cardBg/60">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h2 class="text-base font-bold text-white font-display">STRIMHUB Admin Dashboard</h2>
+        </div>
+        <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Panel Navigation Tabs -->
+      <div class="flex border-b border-borderLine px-4 bg-[#0e1422] overflow-x-auto text-xs font-semibold">
+        <button onclick="switchAdminTab('tabAdd')" id="btnTabAdd" class="py-3 px-4 border-b-2 border-primary text-primary flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-circle-plus"></i> Add Video
+        </button>
+        <button onclick="switchAdminTab('tabManage')" id="btnTabManage" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-list-check"></i> Previous Videos (<span id="tabVideoCount">0</span>)
+        </button>
+        <button onclick="switchAdminTab('tabAds')" id="btnTabAds" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-rectangle-ad"></i> Ads & SmartLinks
+        </button>
+        <button onclick="switchAdminTab('tabDatabase')" id="btnTabDatabase" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-database"></i> Database Settings
+        </button>
+      </div>
+
+      <!-- Modal Body (Tab Panels) -->
+      <div class="p-5 overflow-y-auto flex-grow space-y-5">
+
+        <!-- TAB 1: ADD VIDEO -->
+        <div id="tabAdd" class="space-y-4">
+          <div class="bg-cardBg/60 p-3.5 rounded-xl border border-borderLine text-xs text-gray-300">
+            <i class="fa-solid fa-info-circle text-primary mr-1"></i>
+            Internet Archive (.mp4) athva game te direct streaming video link ahiya add karo.
+          </div>
+
+          <form id="addVideoForm" onsubmit="handleAddVideoSubmit(event)" class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Video Title</label>
+              <input type="text" id="newVideoTitle" required placeholder="e.g. 3630 Archive Stream HD" 
+                     class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Video Streaming URL (MP4 / Archive Link)</label>
+              <input type="url" id="newVideoUrl" required placeholder="https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4" 
+                     class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2.5 text-xs text-white font-mono outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Downloading Link</label>
+              <input type="url" id="newDownloadUrl" required placeholder="https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4" 
+                     class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2.5 text-xs text-white font-mono outline-none">
+            </div>
+
+            <button type="submit" id="btnAddVideoBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-primary-dark hover:to-orange-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/20 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Add to Database</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 2: MANAGE PREVIOUS VIDEOS -->
+        <div id="tabManage" class="hidden space-y-3">
+          <div class="flex items-center justify-between pb-1">
+            <span class="text-xs text-gray-400">Total videos fetched from active database:</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-borderLine">
+            <table class="w-full text-left text-xs text-gray-300">
+              <thead class="bg-cardBg text-gray-400 uppercase text-[10px] tracking-wider border-b border-borderLine">
+                <tr>
+                  <th class="p-3">Title</th>
+                  <th class="p-3 hidden sm:table-cell">Stream URL</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminVideosTableBody" class="divide-y divide-borderLine bg-surface">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: ADS & SMARTLINKS SETUP -->
+        <div id="tabAds" class="hidden space-y-4">
+          <div class="bg-cardBg/60 p-3.5 rounded-xl border border-borderLine text-xs text-gray-300">
+            <i class="fa-solid fa-rectangle-ad text-primary mr-1"></i>
+            Header (728x90), Footer (728x90), 320x50 Overlay ad ane SmartLinks setup ahiya customize kari sako chho.
+          </div>
+
+          <form id="adsConfigForm" onsubmit="handleSaveAdsConfig(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Top Header Ad Code (728x90)</label>
+              <textarea id="adHeaderInput" rows="3" class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl p-3 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Bottom Footer Ad Code (728x90)</label>
+              <textarea id="adFooterInput" rows="3" class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl p-3 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Player Overlay Ad Code (320x50)</label>
+              <textarea id="adPlayerInput" rows="3" class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl p-3 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-primary mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-shuffle"></i>
+                <span>SmartLinks Pool (1 link per line)</span>
+              </label>
+              <textarea id="adSmartlinksInput" rows="4" class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl p-3 text-xs font-mono text-gray-300 outline-none" placeholder="https://smartlink1.com&#10;https://smartlink2.com"></textarea>
+              <span class="text-[10px] text-gray-400 block mt-1">Video card, download, athva close ad button click karta amanthi game te ek link new tab ma khulshe.</span>
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs uppercase tracking-wide text-white transition shadow-lg shadow-emerald-900/30">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Save Ads & SmartLinks
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 4: DATABASE SWITCHER SETTINGS -->
+        <div id="tabDatabase" class="hidden space-y-4">
+          <div class="bg-cardBg/60 p-4 rounded-xl border border-borderLine text-xs text-gray-300 space-y-2">
+            <p class="font-semibold text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-database text-amber-400"></i>
+              <span>Active Firebase Realtime Database URL</span>
+            </p>
+            <p class="text-gray-400">
+              Tame atyare je database vaprata hoy ena sivay biji navi Firebase Database URL add karvi hoy to ahiya change kari sako chho. Aa URL browser local storage ma save thashe.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-gray-300">Database REST URL</label>
+            <input type="text" id="customDbUrlInput" placeholder="https://your-db-default-rtdb.firebaseio.com" 
+                   class="w-full bg-cardBg border border-borderLine focus:border-primary rounded-xl px-3.5 py-2.5 text-xs text-white font-mono outline-none">
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <button onclick="saveDatabaseUrl()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-lg transition">
+              <i class="fa-solid fa-check mr-1"></i> Update & Load Database
+            </button>
+            <button onclick="resetDefaultDbUrl()" class="px-5 py-2.5 bg-cardBg hover:bg-borderLine border border-borderLine text-gray-300 rounded-xl text-xs font-semibold">
+              Reset Default
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-surface border border-primary/50 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-primary"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <script>
+    // System Constants
+    const DEFAULT_DB_URL = "https://primium-videos-boating-default-rtdb.firebaseio.com";
+    const ADMIN_CREDENTIALS = { user: "Chiku", pass: "001" };
+
+    // Default Ad tags (Provided by user)
+    const DEFAULT_HEADER_AD = `<script>
+  atOptions = {
+    'key' : '70994765c8712b166b7e9dc2bfb4f372',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+<` + `/script>
+<script src="https://www.highrevenueformat.com/70994765c8712b166b7e9dc2bfb4f372/invoke.js"><` + `/script>`;
+
+    const DEFAULT_FOOTER_AD = `<ins style="width: 728px;height:90px" data-width="728" data-height="90" class="i07d71e101d" data-domain="//data527.click" data-affquery="/6db8e6585a09071d4b85/07d71e101d/?placementName=default"><script src="//data527.click/js/responsive.js" async><` + `/script></ins>`;
+
+    const DEFAULT_320_AD = `<script>
+  atOptions = {
+    'key' : '9e08459ce30416c72debb80a221e01d6',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+<` + `/script>
+<script src="https://www.highrevenueformat.com/9e08459ce30416c72debb80a221e01d6/invoke.js"><` + `/script>`;
+
+    // Active State
+    let activeDbUrl = localStorage.getItem("strimhub_db_url") || DEFAULT_DB_URL;
+    let videosList = [];
+    let currentActiveVideo = null;
+    let isAdminLoggedIn = false;
+
+    // Ads and Smartlinks State
+    let adsConfig = {
+      headerAdHtml: DEFAULT_HEADER_AD,
+      footerAdHtml: DEFAULT_FOOTER_AD,
+      playerAdHtml: DEFAULT_320_AD,
+      smartlinks: [
+        "https://ia600501.us.archive.org",
+        "https://archive.org"
+      ]
+    };
+
+    // Clean DB URL helper
+    function cleanDbUrl(url) {
+      return (url || "").trim().replace(/\/+$/, '');
+    }
+
+    // =========================================================================
+    // WORKING AD EXECUTION VIA ISOLATED IFRAME (Bypasses innerHTML script blocks)
+    // =========================================================================
+    function renderAdInsideContainer(containerId, htmlContent, width, height) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (!htmlContent || !htmlContent.trim()) {
+        container.innerHTML = `<span class="text-[11px] text-gray-500 font-mono">Ad Slot (${width}x${height})</span>`;
+        return;
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.style.width = width + "px";
+      iframe.style.height = height + "px";
+      iframe.style.border = "none";
+      iframe.style.overflow = "hidden";
+      iframe.scrolling = "no";
+      iframe.setAttribute("loading", "lazy");
+
+      container.appendChild(iframe);
+
+      const doc = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
+      doc.document.open();
+      doc.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <base target="_blank">
+            <style>
+              body { margin:0; padding:0; display:flex; justify-content:center; align-items:center; background:transparent; overflow:hidden; }
+            </style>
+          </head>
+          <body>
+            ${htmlContent}
+          </body>
+        </html>
+      `);
+      doc.document.close();
+    }
+
+    function refreshAllAds() {
+      renderAdInsideContainer("headerAdWrapper", adsConfig.headerAdHtml, 728, 90);
+      renderAdInsideContainer("footerAdWrapper", adsConfig.footerAdHtml, 728, 90);
+      renderAdInsideContainer("player320AdWrapper", adsConfig.playerAdHtml, 320, 50);
+    }
+
+    // =========================================================================
+    // SMARTLINK MONETIZATION ENGINE
+    // =========================================================================
+    function triggerRandomSmartlink() {
+      try {
+        const pool = (adsConfig.smartlinks && adsConfig.smartlinks.length > 0)
+          ? adsConfig.smartlinks.filter(l => l && l.trim().length > 0)
+          : ["https://archive.org"];
+        
+        if (pool.length === 0) return;
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        const targetUrl = pool[randomIndex].trim();
+        
+        if (targetUrl) {
+          window.open(targetUrl, '_blank');
+        }
+      } catch (err) {
+        console.warn("SmartLink trigger error:", err);
+      }
+    }
+
+    let logoClickCount = 0;
+    let logoClickTimer = null;
+
+    document.getElementById("secretLogo").addEventListener("click", () => {
+      logoClickCount++;
+      clearTimeout(logoClickTimer);
+      logoClickTimer = setTimeout(() => {
+        logoClickCount = 0;
+      }, 2500);
+
+      if (logoClickCount >= 5) {
+        logoClickCount = 0;
+        if (isAdminLoggedIn) {
+          openAdminPanel();
+        } else {
+          openAdminLogin();
+        }
+      }
+    });
+
+    function openAdminLogin() {
+      document.getElementById("adminUser").value = "";
+      document.getElementById("adminPass").value = "";
+      document.getElementById("loginError").classList.add("hidden");
+      document.getElementById("loginModal").classList.remove("hidden");
+    }
+
+    function closeAdminLogin() {
+      document.getElementById("loginModal").classList.add("hidden");
+    }
+
+    function verifyAdminLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById("adminUser").value.trim();
+      const pass = document.getElementById("adminPass").value.trim();
+      const err = document.getElementById("loginError");
+
+      if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
+        isAdminLoggedIn = true;
+        err.classList.add("hidden");
+        closeAdminLogin();
+        openAdminPanel();
+        showToast("Welcome Admin Chiku!", "fa-shield-halved");
+      } else {
+        err.classList.remove("hidden");
+      }
+    }
+
+    function openAdminPanel() {
+      document.getElementById("adminPanelModal").classList.remove("hidden");
+      document.getElementById("customDbUrlInput").value = activeDbUrl;
+      populateAdsInputs();
+      renderAdminVideosTable();
+    }
+
+    function closeAdminPanel() {
+      document.getElementById("adminPanelModal").classList.add("hidden");
+    }
+
+    function switchAdminTab(tabId) {
+      ['tabAdd', 'tabManage', 'tabAds', 'tabDatabase'].forEach(t => {
+        document.getElementById(t).classList.add("hidden");
+      });
+      ['btnTabAdd', 'btnTabManage', 'btnTabAds', 'btnTabDatabase'].forEach(b => {
+        document.getElementById(b).className = "py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 whitespace-nowrap";
+      });
+
+      document.getElementById(tabId).classList.remove("hidden");
+      const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+      document.getElementById(btnId).className = "py-3 px-4 border-b-2 border-primary text-primary flex items-center gap-2 whitespace-nowrap";
+
+      if (tabId === 'tabManage') renderAdminVideosTable();
+    }
+
+    // =========================================================================
+    // FIREBASE DATABASE SYNCHRONIZATION
+    // =========================================================================
+    async function fetchVideosFromFirebase() {
+      const badge = document.getElementById("videoCountBadge");
+      badge.textContent = "Syncing...";
+
+      try {
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`);
+        const data = await res.json();
+        
+        videosList = [];
+        if (data) {
+          Object.keys(data).forEach(key => {
+            if (data[key]) {
+              videosList.push({
+                id: key,
+                ...data[key]
+              });
+            }
+          });
+          videosList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        }
+
+        // If newly created or completely empty, seed initial sample video
+        if (videosList.length === 0) {
+          const sample = {
+            title: "Archive 3630 High Definition Stream",
+            videoUrl: "https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4",
+            downloadUrl: "https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4",
+            timestamp: Date.now()
+          };
+          await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sample)
+          });
+          return fetchVideosFromFirebase();
+        }
+
+        badge.textContent = `${videosList.length} Videos Available`;
+        document.getElementById("tabVideoCount").textContent = videosList.length;
+        renderHomeGrid();
+      } catch (err) {
+        console.error("Firebase fetch error:", err);
+        badge.textContent = "Offline / Connection Error";
+        document.getElementById("videoGrid").innerHTML = `
+          <div class="col-span-full p-6 text-center bg-surface border border-borderLine rounded-2xl text-red-400">
+            Database thi video load nathi thaya. Krupaya Database URL check karo.
+          </div>
+        `;
+      }
+    }
+
+    async function fetchAdsConfigFromFirebase() {
+      try {
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/ads_config.json`);
+        const data = await res.json();
+        if (data) {
+          adsConfig.headerAdHtml = data.headerAdHtml || DEFAULT_HEADER_AD;
+          adsConfig.footerAdHtml = data.footerAdHtml || DEFAULT_FOOTER_AD;
+          adsConfig.playerAdHtml = data.playerAdHtml || DEFAULT_320_AD;
+          adsConfig.smartlinks = Array.isArray(data.smartlinks) ? data.smartlinks : adsConfig.smartlinks;
+        }
+      } catch (e) {
+        console.warn("Using local defaults for Ads");
+      }
+      refreshAllAds();
+    }
+
+    function renderHomeGrid() {
+      const grid = document.getElementById("videoGrid");
+      const emptyState = document.getElementById("noVideosPlaceholder");
+
+      if (videosList.length === 0) {
+        grid.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      grid.innerHTML = videosList.map(item => `
+        <div onclick="handleVideoCardClick('${item.id}')" 
+             class="group cursor-pointer bg-surface hover:bg-cardBg border border-borderLine hover:border-primary/50 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
+          
+          <div class="aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
+            <i class="fa-solid fa-circle-play text-4xl text-white/70 group-hover:text-primary group-hover:scale-110 transition duration-300 z-20"></i>
+            <span class="absolute top-2 left-2 z-20 bg-black/70 text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded border border-borderLine">
+              HD MP4
+            </span>
+          </div>
+
+          <div class="p-3 flex flex-col justify-between flex-grow space-y-2">
+            <h4 class="text-xs sm:text-sm font-semibold text-gray-100 line-clamp-2 group-hover:text-primary transition" title="${escapeHtml(item.title)}">
+              ${escapeHtml(item.title)}
+            </h4>
+            <div class="flex justify-between items-center text-[10px] text-gray-500 pt-1 border-t border-borderLine">
+              <span>Stream Hub</span>
+              <span class="text-primary font-medium flex items-center gap-1">
+                Watch <i class="fa-solid fa-chevron-right text-[8px]"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleVideoCardClick(videoId) {
+      // Requirement: SmartLink opens in new tab on click
+      triggerRandomSmartlink();
+      playVideoById(videoId);
+    }
+
+    function playVideoById(videoId) {
+      const target = videosList.find(v => v.id === videoId);
+      if (!target) return;
+
+      currentActiveVideo = target;
+
+      document.getElementById("homeView").classList.add("hidden");
+      document.getElementById("watchView").classList.remove("hidden");
+
+      document.getElementById("breadcrumbTitle").textContent = target.title;
+      document.getElementById("activeVideoTitle").textContent = target.title;
+
+      const player = document.getElementById("mainVideoPlayer");
+      player.pause();
+      player.src = target.videoUrl;
+
+      // Show 320x50 Ad Overlay
+      document.getElementById("playerAdOverlay").classList.remove("hidden");
+      renderAdInsideContainer("player320AdWrapper", adsConfig.playerAdHtml, 320, 50);
+
+      renderRelatedVideos(target.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderRelatedVideos(currentVideoId) {
+      const container = document.getElementById("relatedVideosGrid");
+      const related = videosList.filter(v => v.id !== currentVideoId);
+
+      if (related.length === 0) {
+        container.innerHTML = `<div class="col-span-2 text-center text-xs text-gray-500 py-6">No additional videos found</div>`;
+        return;
+      }
+
+      container.innerHTML = related.map(item => `
+        <div onclick="handleRelatedVideoClick('${item.id}')" 
+             class="group bg-surface hover:bg-cardBg border border-borderLine hover:border-primary/50 rounded-xl overflow-hidden cursor-pointer transition-all duration-200">
+          <div class="aspect-video relative overflow-hidden bg-black flex items-center justify-center">
+            <i class="fa-solid fa-play text-white text-xs bg-primary/80 p-2 rounded-full group-hover:scale-110 transition-transform"></i>
+          </div>
+          <div class="p-2 space-y-1">
+            <h4 class="text-[11px] font-semibold text-gray-200 group-hover:text-primary transition line-clamp-2">
+              ${escapeHtml(item.title)}
+            </h4>
+            <p class="text-[9px] text-gray-500 font-mono">Related Stream</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleRelatedVideoClick(videoId) {
+      triggerRandomSmartlink();
+      playVideoById(videoId);
+    }
+
+    function closeAdAndPlayVideo() {
+      // Trigger SmartLink in new tab as requested
+      triggerRandomSmartlink();
+
+      // Hide Ad Overlay & Begin playback
+      document.getElementById("playerAdOverlay").classList.add("hidden");
+      const player = document.getElementById("mainVideoPlayer");
+      player.play().catch(e => console.log("Autoplay permission notice:", e));
+    }
+
+    function handleDownloadClick() {
+      if (!currentActiveVideo || !currentActiveVideo.downloadUrl) {
+        showToast("Download link not configured", "fa-triangle-exclamation");
+        return;
+      }
+
+      // Requirement: Trigger smartlink and redirect to designated download link
+      triggerRandomSmartlink();
+      setTimeout(() => {
+        window.open(currentActiveVideo.downloadUrl, '_blank');
+      }, 300);
+    }
+
+    function navigateHome() {
+      const player = document.getElementById("mainVideoPlayer");
+      player.pause();
+      player.src = "";
+      document.getElementById("watchView").classList.add("hidden");
+      document.getElementById("homeView").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function handleAddVideoSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById("newVideoTitle").value.trim();
+      const videoUrl = document.getElementById("newVideoUrl").value.trim();
+      const downloadUrl = document.getElementById("newDownloadUrl").value.trim();
+
+      const btn = document.getElementById("btnAddVideoBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+
+      try {
+        const newEntry = {
+          title,
+          videoUrl,
+          downloadUrl: downloadUrl || videoUrl,
+          timestamp: Date.now()
+        };
+
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEntry)
+        });
+
+        if (!res.ok) throw new Error("Could not save video");
+
+        document.getElementById("addVideoForm").reset();
+        showToast("Video added to Firebase!", "fa-circle-check");
+        await fetchVideosFromFirebase();
+        switchAdminTab('tabManage');
+      } catch (err) {
+        showToast(err.message, "fa-circle-xmark");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i><span>Add to Database</span>`;
+      }
+    }
+
+    function renderAdminVideosTable() {
+      const tbody = document.getElementById("adminVideosTableBody");
+      if (videosList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">Database ma koi video nathi</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = videosList.map(item => `
+        <tr class="hover:bg-cardBg/40 transition">
+          <td class="p-3 font-medium text-white max-w-[200px] truncate">
+            ${escapeHtml(item.title)}
+          </td>
+          <td class="p-3 hidden sm:table-cell text-gray-400 font-mono text-[10px] max-w-[250px] truncate">
+            ${escapeHtml(item.videoUrl)}
+          </td>
+          <td class="p-3 text-right space-x-1.5 whitespace-nowrap">
+            <button onclick="editVideoPrompt('${item.id}')" class="px-2.5 py-1 bg-amber-600/80 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteVideo('${item.id}')" class="px-2.5 py-1 bg-red-600/80 hover:bg-red-600 text-white rounded-lg text-xs font-semibold">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteVideo(id) {
+      if (!confirm("Are you sure you want to remove this video from Firebase?")) return;
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/videos/${id}.json`, { method: 'DELETE' });
+        showToast("Video deleted successfully", "fa-trash-can");
+        await fetchVideosFromFirebase();
+        renderAdminVideosTable();
+      } catch (e) {
+        showToast("Delete failed", "fa-circle-xmark");
+      }
+    }
+
+    async function editVideoPrompt(id) {
+      const v = videosList.find(x => x.id === id);
+      if (!v) return;
+
+      const newTitle = prompt("Edit Video Title:", v.title);
+      if (newTitle === null) return;
+      const newUrl = prompt("Edit Video Stream URL:", v.videoUrl);
+      if (newUrl === null) return;
+      const newDl = prompt("Edit Download URL:", v.downloadUrl || v.videoUrl);
+      if (newDl === null) return;
+
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/videos/${id}.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: newTitle.trim() || v.title,
+            videoUrl: newUrl.trim() || v.videoUrl,
+            downloadUrl: newDl.trim() || v.downloadUrl
+          })
+        });
+        showToast("Video details updated!", "fa-check");
+        await fetchVideosFromFirebase();
+        renderAdminVideosTable();
+      } catch (err) {
+        showToast("Update failed", "fa-triangle-exclamation");
+      }
+    }
+
+    function populateAdsInputs() {
+      document.getElementById("adHeaderInput").value = adsConfig.headerAdHtml || "";
+      document.getElementById("adFooterInput").value = adsConfig.footerAdHtml || "";
+      document.getElementById("adPlayerInput").value = adsConfig.playerAdHtml || "";
+      document.getElementById("adSmartlinksInput").value = (adsConfig.smartlinks || []).join("\n");
+    }
+
+    async function handleSaveAdsConfig(e) {
+      e.preventDefault();
+      const header = document.getElementById("adHeaderInput").value;
+      const footer = document.getElementById("adFooterInput").value;
+      const p320 = document.getElementById("adPlayerInput").value;
+      const links = document.getElementById("adSmartlinksInput").value
+        .split("\n")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      adsConfig = {
+        headerAdHtml: header,
+        footerAdHtml: footer,
+        playerAdHtml: p320,
+        smartlinks: links
+      };
+
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/ads_config.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adsConfig)
+        });
+        showToast("Ads & SmartLinks updated in Firebase!", "fa-floppy-disk");
+        refreshAllAds();
+      } catch (err) {
+        showToast("Failed to save Ads", "fa-triangle-exclamation");
+      }
+    }
+
+    function saveDatabaseUrl() {
+      const input = document.getElementById("customDbUrlInput").value.trim();
+      if (!input.startsWith("http")) {
+        showToast("Please enter a valid Firebase URL", "fa-triangle-exclamation");
+        return;
+      }
+      activeDbUrl = cleanDbUrl(input);
+      localStorage.setItem("strimhub_db_url", activeDbUrl);
+      showToast("Database URL updated successfully!", "fa-database");
+      fetchVideosFromFirebase();
+      fetchAdsConfigFromFirebase();
+    }
+
+    function resetDefaultDbUrl() {
+      activeDbUrl = DEFAULT_DB_URL;
+      localStorage.setItem("strimhub_db_url", activeDbUrl);
+      document.getElementById("customDbUrlInput").value = activeDbUrl;
+      showToast("Reset to default Firebase database", "fa-database");
+      fetchVideosFromFirebase();
+      fetchAdsConfigFromFirebase();
+    }
+
+    function showToast(msg, icon = "fa-circle-check") {
+      const t = document.getElementById("toastNotification");
+      document.getElementById("toastMsg").textContent = msg;
+      document.getElementById("toastIcon").className = `fa-solid ${icon} text-primary`;
+
+      t.classList.remove('translate-y-20', 'opacity-0');
+      t.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        t.classList.remove('translate-y-0', 'opacity-100');
+        t.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    // Initialize application on window load
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchAdsConfigFromFirebase();
+      fetchVideosFromFirebase();
+    });
+  </script>
+</body>
+</html>
