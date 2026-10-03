@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="gu" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>STRIMHUB - Premium Video Streaming</title>
+  
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif']
+          },
+          colors: {
+            brand: '#E50914',
+            brandGlow: '#ff2a38',
+            darkBg: '#080a10',
+            darkCard: '#101420',
+            darkBorder: 'rgba(255, 255, 255, 0.08)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      background-color: #080a10;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #080a10; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #E50914; }
+
+    /* Responsive Ad Banner Auto-Scaler: Scales 728x90 smoothly without blowing up mobile viewport */
+    .ad-scaler-box {
+      width: 100%;
+      max-width: 728px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .ad-scaler-frame {
+      width: 728px;
+      height: 90px;
+      transform-origin: center center;
+      transition: transform 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      .ad-scaler-box { height: 55px; }
+      .ad-scaler-frame { transform: scale(0.55); }
+    }
+    @media (max-width: 480px) {
+      .ad-scaler-box { height: 46px; }
+      .ad-scaler-frame { transform: scale(0.46); }
+    }
+
+    /* Video player styling */
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+    /* Prevent default download button from showing */
+    video::-internal-media-controls-download-button { display: none !important; }
+    video::-webkit-media-controls-enclosure { overflow: hidden; }
+
+    .glow-card:hover {
+      box-shadow: 0 10px 25px -5px rgba(229, 9, 20, 0.35);
+      border-color: rgba(229, 9, 20, 0.5);
+    }
+  </style>
+</head>
+<body class="selection:bg-brand selection:text-white">
+
+  <header class="sticky top-0 z-40 bg-[#080a10]/90 backdrop-blur-md border-b border-darkBorder px-4 sm:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Secret 5-Click Admin Access Logo -->
+      <div id="secretLogoBtn" class="flex items-center gap-3 cursor-pointer select-none group" title="Click 5 times for Admin Panel">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand to-rose-600 flex items-center justify-center text-white shadow-lg shadow-brand/30 group-hover:scale-105 transition-transform duration-200">
+          <i class="fa-solid fa-play text-xs ml-0.5"></i>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xl sm:text-2xl font-black font-display tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400 group-hover:to-brand transition-all">
+              STRIM<span class="text-brand">HUB</span>
+            </span>
+            <span class="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded bg-brand/10 border border-brand/40 text-brand">
+              PRO
+            </span>
+          </div>
+          <span class="text-[9px] text-gray-500 font-mono tracking-tight">Ultra Fast Cinema Cloud</span>
+        </div>
+      </div>
+
+      <!-- Header navigation buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="navigateHome()" class="px-3.5 py-1.5 rounded-lg bg-darkCard hover:bg-slate-800 border border-darkBorder hover:border-brand/40 text-xs font-semibold flex items-center gap-2 text-gray-200 hover:text-white transition active:scale-95 shadow-sm">
+          <i class="fa-solid fa-house text-xs text-brand"></i>
+          <span>Home</span>
+        </button>
+        <button onclick="openAdminLogin()" class="w-8 h-8 rounded-lg bg-darkCard hover:bg-slate-800 border border-darkBorder text-gray-400 hover:text-white flex items-center justify-center text-xs transition" title="Staff Portal">
+          <i class="fa-solid fa-shield-halved"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="w-full flex justify-center py-2 px-2 bg-black/40 border-b border-darkBorder">
+    <div class="w-full max-w-3xl bg-darkCard/50 border border-white/[0.04] rounded-xl p-1.5 shadow-sm flex flex-col items-center">
+      <div class="flex justify-between items-center w-full px-2 pb-1 text-[9px] uppercase tracking-wider text-gray-500 font-semibold">
+        <span><i class="fa-solid fa-bolt text-brand text-[8px] mr-1"></i>Sponsored Banner</span>
+        <span>728 &times; 90</span>
+      </div>
+      <div class="ad-scaler-box rounded-lg bg-black/70">
+        <div id="headerAdContainer" class="ad-scaler-frame"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 w-full flex-grow">
+
+    <!-- HOME VIEW: L1 L2 L3 L4 RESPONSIVE VIDEO GRID -->
+    <section id="homeView" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-darkBorder gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-2.5 h-6 bg-brand rounded-full"></div>
+          <h2 class="text-lg sm:text-xl font-bold font-display text-white tracking-wide">
+            Latest Streams
+          </h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="videoCountBadge" class="text-[11px] font-mono bg-darkCard text-gray-400 px-3 py-1 rounded-full border border-darkBorder">
+            Syncing...
+          </span>
+        </div>
+      </div>
+
+      <!-- Responsive Grid: 2 Cols on mobile, 4 Cols on desktop -->
+      <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        <!-- Rendered dynamically via JavaScript with automatic video thumbnails -->
+      </div>
+      
+      <div id="emptyGridMsg" class="hidden text-center py-16 bg-darkCard/40 border border-dashed border-darkBorder rounded-2xl">
+        <i class="fa-solid fa-film text-3xl text-gray-600 mb-2"></i>
+        <p class="text-sm font-semibold text-gray-300">No videos available</p>
+        <p class="text-xs text-gray-500 mt-1">Click STRIMHUB logo 5 times to log in and add videos.</p>
+      </div>
+    </section>
+
+    <!-- PLAYER VIEW: THEATER MODE & RELATED VIDEOS -->
+    <section id="playerView" class="hidden space-y-6">
+      
+      <!-- Back Navigation Bar -->
+      <div class="flex items-center justify-between">
+        <button onclick="navigateHome()" class="px-3.5 py-1.5 rounded-lg bg-darkCard hover:bg-slate-800 border border-darkBorder text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition active:scale-95">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Back to Library</span>
+        </button>
+        <span class="text-[11px] text-gray-400 font-mono flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Ultra Fast Stream Ready
+        </span>
+      </div>
+
+      <!-- Video Player Frame Area -->
+      <div class="w-full max-w-5xl mx-auto">
+        <div class="video-viewport">
+          
+          <!-- Standard High-Performance HTML5 Video Element (No crossOrigin restrictions so Archive.org works 100%) -->
+          <video 
+            id="streamPlayer" 
+            controls 
+            controlslist="nodownload" 
+            playsinline 
+            preload="auto"
+            oncontextmenu="return false;">
+            Your browser does not support high-definition video playback.
+          </video>
+
+          <!-- 320x50 Ad Overlay Container directly on top of video -->
+          <div id="playerAdOverlay" class="absolute inset-0 bg-black/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4 transition-all">
+            <div class="w-full max-w-sm bg-darkCard border border-darkBorder rounded-2xl p-4 shadow-2xl text-center space-y-3.5">
+              
+              <div class="flex items-center justify-between border-b border-darkBorder pb-2">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-brand flex items-center gap-1.5">
+                  <i class="fa-solid fa-shield-halved"></i> Sponsor Verification
+                </span>
+                <span class="text-[10px] text-gray-400 font-mono">320 &times; 50</span>
+              </div>
+
+              <!-- 320x50 Ad Container -->
+              <div class="w-[320px] h-[50px] mx-auto bg-black rounded-lg border border-white/[0.08] overflow-hidden flex items-center justify-center">
+                <div id="playerAd320Container" class="w-[320px] h-[50px] flex items-center justify-center"></div>
+              </div>
+
+              <p class="text-[11px] text-gray-400 leading-snug">
+                Click below to close the sponsor banner and begin high-speed streaming.
+              </p>
+
+              <!-- Close Ad & Play Button (Triggers SmartLink + Begins Playback immediately within gesture) -->
+              <button onclick="closeAdAndPlayVideo()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-brand to-rose-600 hover:from-brandGlow hover:to-rose-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand/25 flex items-center justify-center gap-2 transition active:scale-95">
+                <i class="fa-solid fa-play text-xs"></i>
+                <span>Close Ad & Play Video</span>
+                <i class="fa-solid fa-xmark text-sm ml-1"></i>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Video Metadata, Direct Share Button & Download Button -->
+        <div class="mt-4 p-4 sm:p-5 rounded-2xl bg-darkCard border border-darkBorder flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
+          <div class="space-y-1">
+            <h1 id="playerVideoTitle" class="text-base sm:text-xl font-bold font-display text-white">Stream Title</h1>
+            <p class="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-check"></i> High Performance Direct Cloud Stream
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2.5 shrink-0">
+            <!-- Direct Video Share Button: Copies URL with ?v=VIDEO_ID -->
+            <button onclick="shareCurrentVideo()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-darkBorder text-gray-200 hover:text-white font-semibold text-xs flex items-center gap-2 transition active:scale-95 shadow">
+              <i class="fa-solid fa-share-nodes text-cyan-400"></i>
+              <span>Share Video</span>
+            </button>
+
+            <!-- Download Button: Triggers SmartLink and opens Admin-specified Download URL -->
+            <button id="downloadBtn" onclick="handleDownloadClick()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-950/40 transition active:scale-95">
+              <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Videos (2-Column Grid as requested) -->
+      <div class="pt-6 border-t border-darkBorder max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-gray-200 flex items-center gap-2">
+            <i class="fa-solid fa-film text-rose-500"></i> Related Streams
+          </h3>
+          <span class="text-[11px] text-gray-500 font-mono">2 Columns Recommended</span>
+        </div>
+        
+        <!-- 2 Column Responsive Grid: | Redment video| | Redment video| -->
+        <div id="relatedVideosGrid" class="grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <div class="w-full flex justify-center py-2 px-2 bg-black/40 border-t border-darkBorder">
+    <div class="w-full max-w-3xl bg-darkCard/50 border border-white/[0.04] rounded-xl p-1.5 shadow-sm flex flex-col items-center">
+      <div class="flex justify-between items-center w-full px-2 pb-1 text-[9px] uppercase tracking-wider text-gray-500 font-semibold">
+        <span><i class="fa-solid fa-bolt text-brand text-[8px] mr-1"></i>Sponsored Banner</span>
+        <span>728 &times; 90</span>
+      </div>
+      <div class="ad-scaler-box rounded-lg bg-black/70">
+        <div id="footerAdContainer" class="ad-scaler-frame"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-darkBorder bg-[#05070a] py-4 px-4 text-center text-xs text-gray-500">
+    <p>STRIMHUB &copy; 2026 - High-Speed Cloud Video Streaming</p>
+  </footer>
+
+  <div id="loginModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-darkCard border border-darkBorder w-full max-w-sm rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-darkBorder pb-3">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-lock text-brand"></i> Admin Panel Login
+        </h3>
+        <button onclick="closeAdminLogin()" class="text-gray-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4 pt-1">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Username</label>
+          <input type="text" id="adminUserInput" required placeholder="Enter username" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
+          <input type="password" id="adminPassInput" required placeholder="Enter password" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+        </div>
+        <p id="loginErrMsg" class="text-xs text-rose-500 hidden font-semibold text-center">Username athva Password khotu chhe!</p>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-brand hover:bg-brandGlow font-bold text-xs text-white tracking-wide shadow-lg shadow-brand/25 transition">
+          Unlock Admin Panel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="adminPanelModal" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden z-50 flex items-center justify-center p-2 sm:p-5">
+    <div class="bg-darkCard border border-darkBorder w-full max-w-4xl max-h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      
+      <!-- Panel Header -->
+      <div class="p-4 border-b border-darkBorder flex justify-between items-center bg-[#080a10]">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-brand"></i>
+          <h2 class="text-base font-bold text-white font-display">STRIMHUB Control Center</h2>
+        </div>
+        <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-white text-lg px-2">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex border-b border-darkBorder bg-[#0c0f17] text-xs font-semibold overflow-x-auto">
+        <button onclick="switchAdminTab('tabAdd')" id="btnTabAdd" class="py-3 px-4 border-b-2 border-brand text-brand flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-plus-circle"></i> Add Video
+        </button>
+        <button onclick="switchAdminTab('tabManage')" id="btnTabManage" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-list"></i> Previous Videos (<span id="adminTotalBadge">0</span>)
+        </button>
+        <button onclick="switchAdminTab('tabAds')" id="btnTabAds" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-rectangle-ad"></i> Ads & SmartLinks
+        </button>
+        <button onclick="switchAdminTab('tabDatabase')" id="btnTabDatabase" class="py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 whitespace-nowrap">
+          <i class="fa-solid fa-database"></i> Database URL
+        </button>
+      </div>
+
+      <!-- Tabs Body Area -->
+      <div class="p-4 sm:p-6 overflow-y-auto flex-grow space-y-4">
+        
+        <!-- TAB 1: ADD VIDEO -->
+        <div id="tabAdd" class="space-y-4">
+          <div class="bg-[#080a10] p-3 rounded-xl border border-darkBorder text-xs text-gray-300">
+            <i class="fa-solid fa-circle-info text-brand mr-1"></i>
+            Direct Internet Archive MP4 (`https://ia600501.us.archive.org/.../3630.mp4`) athva direct video streaming link paste karo.
+          </div>
+          
+          <form onsubmit="handleAddNewVideoSubmit(event)" class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Video Title</label>
+              <input type="text" id="newTitle" required placeholder="e.g. Action Thriller Video 3630" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Video Streaming URL (.mp4 / Archive)</label>
+              <input type="url" id="newStreamUrl" required placeholder="https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white font-mono outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Downloading Link</label>
+              <input type="url" id="newDownloadUrl" required placeholder="Direct download link" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white font-mono outline-none">
+            </div>
+            <button type="submit" id="addVideoBtn" class="w-full py-3 bg-brand hover:bg-brandGlow text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition">
+              <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Add to Database
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 2: MANAGE PREVIOUS VIDEOS -->
+        <div id="tabManage" class="hidden space-y-3">
+          <p class="text-xs text-gray-400">Total videos fetched from active database:</p>
+          <div id="adminVideoList" class="space-y-2"></div>
+        </div>
+
+        <!-- TAB 3: ADS & SMARTLINKS SETUP -->
+        <div id="tabAds" class="hidden space-y-4">
+          <form onsubmit="handleSaveAdsSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Top Header Ad Code (728x90)</label>
+              <textarea id="adHeaderInput" rows="3" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl p-2.5 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Bottom Footer Ad Code (728x90)</label>
+              <textarea id="adFooterInput" rows="3" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl p-2.5 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 mb-1">Player Overlay Ad Code (320x50)</label>
+              <textarea id="ad320Input" rows="3" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl p-2.5 text-xs font-mono text-gray-300 outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-brand mb-1">
+                <i class="fa-solid fa-shuffle mr-1"></i> SmartLinks List (1 link per line)
+              </label>
+              <textarea id="smartLinksInput" rows="4" placeholder="https://smartlink1.com&#10;https://smartlink2.com" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl p-2.5 text-xs font-mono text-gray-300 outline-none"></textarea>
+              <span class="text-[10px] text-gray-400 block mt-1">Video click, close ad button, athva download button click karta ek link new tab ma randomly open thashe.</span>
+            </div>
+            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wide rounded-xl shadow-lg transition">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> Save Ads & SmartLinks
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 4: DATABASE URL SWITCHER -->
+        <div id="tabDatabase" class="hidden space-y-4">
+          <div class="bg-[#080a10] p-3 rounded-xl border border-darkBorder text-xs text-gray-300">
+            <i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>
+            Tame ahiya thi navi Firebase Realtime Database URL add athva switch kari shako chho.
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Active Firebase Database URL</label>
+            <input type="text" id="customDbUrlInput" class="w-full bg-[#080a10] border border-darkBorder focus:border-brand rounded-xl px-3.5 py-2 text-xs text-white font-mono outline-none">
+          </div>
+          <div class="flex gap-2">
+            <button onclick="saveDatabaseUrl()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow transition">
+              <i class="fa-solid fa-check mr-1"></i> Update & Load Database
+            </button>
+            <button onclick="resetDefaultDbUrl()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-gray-300 rounded-xl text-xs font-semibold">
+              Reset Default
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Configurations
+    const DEFAULT_DB_URL = "https://primium-videos-boating-default-rtdb.firebaseio.com";
+    const ADMIN_AUTH = { user: "Chiku", pass: "001" };
+
+    // Default Exact Ad Codes
+    const DEFAULT_HEADER_AD = `<script>
+  atOptions = {
+    'key' : '70994765c8712b166b7e9dc2bfb4f372',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+<` + `/script>
+<script src="https://www.highrevenueformat.com/70994765c8712b166b7e9dc2bfb4f372/invoke.js"><` + `/script>`;
+
+    const DEFAULT_FOOTER_AD = `<ins style="width: 728px;height:90px" data-width="728" data-height="90" class="i07d71e101d" data-domain="//data527.click" data-affquery="/6db8e6585a09071d4b85/07d71e101d/?placementName=default"><script src="//data527.click/js/responsive.js" async><` + `/script></ins>`;
+
+    const DEFAULT_320_AD = `<script>
+  atOptions = {
+    'key' : '9e08459ce30416c72debb80a221e01d6',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+<` + `/script>
+<script src="https://www.highrevenueformat.com/9e08459ce30416c72debb80a221e01d6/invoke.js"><` + `/script>`;
+
+    // Application State Variables
+    let activeDbUrl = localStorage.getItem("strimhub_db_url") || DEFAULT_DB_URL;
+    let videosCache = {};
+    let currentVideoKey = null;
+    let currentVideo = null;
+
+    let adsConfig = {
+      headerAd: DEFAULT_HEADER_AD,
+      footerAd: DEFAULT_FOOTER_AD,
+      playerAd: DEFAULT_320_AD,
+      smartLinks: [
+        "https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4",
+        "https://archive.org"
+      ]
+    };
+
+    const cleanDbUrl = url => (url || "").trim().replace(/\/+$/, '');
+
+    // =========================================================================
+    // RELIABLE SANDBOXED AD RENDERER (Iframe isolated execution)
+    // =========================================================================
+    function renderAdInsideContainer(containerId, htmlContent, width, height) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (!htmlContent || !htmlContent.trim()) {
+        container.innerHTML = `<span class="text-[10px] text-gray-600 font-mono">Ad Slot (${width}x${height})</span>`;
+        return;
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.style.width = width + "px";
+      iframe.style.height = height + "px";
+      iframe.style.border = "none";
+      iframe.style.overflow = "hidden";
+      iframe.scrolling = "no";
+      iframe.setAttribute("loading", "lazy");
+
+      container.appendChild(iframe);
+      const doc = iframe.contentWindow || iframe.contentDocument.document || iframe.contentDocument;
+      doc.document.open();
+      doc.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <base target="_blank">
+            <style>
+              body { margin:0; padding:0; display:flex; justify-content:center; align-items:center; background:transparent; overflow:hidden; }
+            </style>
+          </head>
+          <body>${htmlContent}</body>
+        </html>
+      `);
+      doc.document.close();
+    }
+
+    function refreshAllAds() {
+      renderAdInsideContainer("headerAdContainer", adsConfig.headerAd, 728, 90);
+      renderAdInsideContainer("footerAdContainer", adsConfig.footerAd, 728, 90);
+      renderAdInsideContainer("playerAd320Container", adsConfig.playerAd, 320, 50);
+    }
+
+    // =========================================================================
+    // SMARTLINK TRIGGER ENGINE
+    // =========================================================================
+    function triggerRandomSmartLink() {
+      if (!adsConfig.smartLinks || adsConfig.smartLinks.length === 0) return;
+      const validLinks = adsConfig.smartLinks.filter(l => l && l.trim().length > 0);
+      if (validLinks.length === 0) return;
+
+      const randomUrl = validLinks[Math.floor(Math.random() * validLinks.length)].trim();
+      try {
+        window.open(randomUrl, "_blank");
+      } catch (e) {
+        console.warn("Popup blocked:", e);
+      }
+    }
+
+    // =========================================================================
+    // SECRET 5-CLICK ADMIN LOGO TRIGGER
+    // =========================================================================
+    let secretLogoClicks = 0;
+    let secretClickTimer = null;
+
+    document.getElementById("secretLogoBtn").addEventListener("click", () => {
+      secretLogoClicks++;
+      clearTimeout(secretClickTimer);
+      secretClickTimer = setTimeout(() => { secretLogoClicks = 0; }, 2200);
+
+      if (secretLogoClicks >= 5) {
+        secretLogoClicks = 0;
+        openAdminLogin();
+      }
+    });
+
+    function openAdminLogin() {
+      document.getElementById("adminUserInput").value = "";
+      document.getElementById("adminPassInput").value = "";
+      document.getElementById("loginErrMsg").classList.add("hidden");
+      document.getElementById("loginModal").classList.remove("hidden");
+    }
+
+    function closeAdminLogin() {
+      document.getElementById("loginModal").classList.add("hidden");
+    }
+
+    function handleAdminLoginSubmit(e) {
+      e.preventDefault();
+      const u = document.getElementById("adminUserInput").value.trim();
+      const p = document.getElementById("adminPassInput").value.trim();
+
+      if (u === ADMIN_AUTH.user && p === ADMIN_AUTH.pass) {
+        closeAdminLogin();
+        openAdminPanel();
+      } else {
+        document.getElementById("loginErrMsg").classList.remove("hidden");
+      }
+    }
+
+    function openAdminPanel() {
+      document.getElementById("adminPanelModal").classList.remove("hidden");
+      document.getElementById("customDbUrlInput").value = activeDbUrl;
+      populateAdsInputs();
+      renderAdminVideos();
+    }
+
+    function closeAdminPanel() {
+      document.getElementById("adminPanelModal").classList.add("hidden");
+    }
+
+    function switchAdminTab(tabId) {
+      ['tabAdd', 'tabManage', 'tabAds', 'tabDatabase'].forEach(t => {
+        document.getElementById(t).classList.add("hidden");
+      });
+      ['btnTabAdd', 'btnTabManage', 'btnTabAds', 'btnTabDatabase'].forEach(b => {
+        document.getElementById(b).className = "py-3 px-4 border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 whitespace-nowrap";
+      });
+
+      document.getElementById(tabId).classList.remove("hidden");
+      const btnId = 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+      document.getElementById(btnId).className = "py-3 px-4 border-b-2 border-brand text-brand flex items-center gap-2 whitespace-nowrap";
+
+      if (tabId === 'tabManage') renderAdminVideos();
+    }
+
+    // =========================================================================
+    // DATABASE FETCH & SYNCHRONIZATION
+    // =========================================================================
+    async function fetchVideosFromFirebase() {
+      const badge = document.getElementById("videoCountBadge");
+      badge.textContent = "Syncing...";
+
+      try {
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`);
+        const data = await res.json();
+        videosCache = data || {};
+
+        // If newly created empty database, seed standard archive test video
+        if (Object.keys(videosCache).length === 0) {
+          const sample = {
+            title: "Archive 3630 High Speed Cinema",
+            streamUrl: "https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4",
+            downloadUrl: "https://ia600501.us.archive.org/32/items/3630_20260927/3630.mp4",
+            createdAt: Date.now()
+          };
+          await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sample)
+          });
+          return fetchVideosFromFirebase();
+        }
+
+        renderHomeGrid();
+        const total = Object.keys(videosCache).length;
+        badge.textContent = `${total} Videos Ready`;
+        document.getElementById("adminTotalBadge").textContent = total;
+
+        // Auto-play video if direct shared link URL accessed: ?v=KEY
+        const params = new URLSearchParams(window.location.search);
+        const sharedKey = params.get('v');
+        if (sharedKey && videosCache[sharedKey]) {
+          playVideoById(sharedKey);
+        }
+      } catch (err) {
+        console.error("Firebase fetch error:", err);
+        badge.textContent = "Offline Mode";
+        document.getElementById("videoGrid").innerHTML = `
+          <div class="col-span-full p-6 text-center bg-darkCard border border-darkBorder rounded-xl text-rose-400">
+            Database connection error. Admin panel ma database URL check karo.
+          </div>
+        `;
+      }
+    }
+
+    async function fetchAdsConfigFromFirebase() {
+      try {
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/ads_config.json`);
+        const data = await res.json();
+        if (data) {
+          adsConfig.headerAd = data.headerAd || DEFAULT_HEADER_AD;
+          adsConfig.footerAd = data.footerAd || DEFAULT_FOOTER_AD;
+          adsConfig.playerAd = data.playerAd || DEFAULT_320_AD;
+          adsConfig.smartLinks = Array.isArray(data.smartLinks) ? data.smartLinks : adsConfig.smartLinks;
+        }
+      } catch (e) {
+        console.warn("Using local default ads config");
+      }
+      refreshAllAds();
+    }
+
+    function populateAdsInputs() {
+      document.getElementById("adHeaderInput").value = adsConfig.headerAd || "";
+      document.getElementById("adFooterInput").value = adsConfig.footerAd || "";
+      document.getElementById("ad320Input").value = adsConfig.playerAd || "";
+      document.getElementById("smartLinksInput").value = (adsConfig.smartLinks || []).join("\n");
+    }
+
+    async function handleSaveAdsSubmit(e) {
+      e.preventDefault();
+      adsConfig = {
+        headerAd: document.getElementById("adHeaderInput").value,
+        footerAd: document.getElementById("adFooterInput").value,
+        playerAd: document.getElementById("ad320Input").value,
+        smartLinks: document.getElementById("smartLinksInput").value.split("\n").map(s => s.trim()).filter(Boolean)
+      };
+
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/ads_config.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adsConfig)
+        });
+        alert("Ads ane SmartLinks Firebase ma save thai gaya!");
+        refreshAllAds();
+      } catch (err) {
+        alert("Ads save error: " + err.message);
+      }
+    }
+
+    function saveDatabaseUrl() {
+      const input = document.getElementById("customDbUrlInput").value.trim();
+      if (!input.startsWith("http")) {
+        alert("Valid Database URL nakho (https://...)");
+        return;
+      }
+      activeDbUrl = cleanDbUrl(input);
+      localStorage.setItem("strimhub_db_url", activeDbUrl);
+      alert("Database URL updated successfully!");
+      fetchVideosFromFirebase();
+      fetchAdsConfigFromFirebase();
+    }
+
+    function resetDefaultDbUrl() {
+      activeDbUrl = DEFAULT_DB_URL;
+      localStorage.setItem("strimhub_db_url", activeDbUrl);
+      document.getElementById("customDbUrlInput").value = activeDbUrl;
+      alert("Default database URL restored!");
+      fetchVideosFromFirebase();
+      fetchAdsConfigFromFirebase();
+    }
+
+    // =========================================================================
+    // VIDEO MANAGEMENT (ADD, EDIT, DELETE)
+    // =========================================================================
+    async function handleAddNewVideoSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById("newTitle").value.trim();
+      const streamUrl = document.getElementById("newStreamUrl").value.trim();
+      const downloadUrl = document.getElementById("newDownloadUrl").value.trim();
+
+      const btn = document.getElementById("addVideoBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...`;
+
+      try {
+        const item = {
+          title,
+          streamUrl,
+          downloadUrl: downloadUrl || streamUrl,
+          createdAt: Date.now()
+        };
+
+        const res = await fetch(`${cleanDbUrl(activeDbUrl)}/videos.json`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item)
+        });
+
+        if (res.ok) {
+          alert("Video Firebase ma add thai gayo!");
+          document.getElementById("newTitle").value = "";
+          document.getElementById("newStreamUrl").value = "";
+          document.getElementById("newDownloadUrl").value = "";
+          await fetchVideosFromFirebase();
+          switchAdminTab('tabManage');
+        }
+      } catch (err) {
+        alert("Add error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1"></i> Add to Database`;
+      }
+    }
+
+    async function deleteVideo(id) {
+      if (!confirm("Are you sure you want to delete this video?")) return;
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/videos/${id}.json`, { method: "DELETE" });
+        delete videosCache[id];
+        renderAdminVideos();
+        renderHomeGrid();
+      } catch (err) {
+        alert("Delete failed: " + err.message);
+      }
+    }
+
+    async function editVideo(id) {
+      const v = videosCache[id];
+      const newT = prompt("Edit Video Title:", v.title);
+      if (newT === null) return;
+      const newS = prompt("Edit Streaming URL:", v.streamUrl);
+      if (newS === null) return;
+      const newD = prompt("Edit Download URL:", v.downloadUrl || v.streamUrl);
+      if (newD === null) return;
+
+      const updated = { ...v, title: newT.trim(), streamUrl: newS.trim(), downloadUrl: newD.trim() };
+      try {
+        await fetch(`${cleanDbUrl(activeDbUrl)}/videos/${id}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        });
+        videosCache[id] = updated;
+        renderAdminVideos();
+        renderHomeGrid();
+      } catch (e) {
+        alert("Update error: " + e.message);
+      }
+    }
+
+    function renderAdminVideos() {
+      const container = document.getElementById("adminVideoList");
+      container.innerHTML = "";
+      const keys = Object.keys(videosCache);
+
+      if (keys.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500">No videos stored.</p>`;
+        return;
+      }
+
+      keys.forEach(k => {
+        const item = videosCache[k];
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between p-3 bg-[#080a10] rounded-xl border border-darkBorder text-xs";
+        row.innerHTML = `
+          <div class="truncate max-w-[65%]">
+            <p class="font-bold text-white truncate">${escapeHtml(item.title)}</p>
+            <p class="text-gray-400 font-mono truncate text-[10px]">${escapeHtml(item.streamUrl)}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editVideo('${k}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded font-medium">Edit</button>
+            <button onclick="deleteVideo('${k}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded font-medium">Delete</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // =========================================================================
+    // AUTOMATIC VIDEO THUMBNAIL PREVIEW & GRID PRESENTATION
+    // =========================================================================
+    function renderHomeGrid() {
+      const grid = document.getElementById("videoGrid");
+      const emptyMsg = document.getElementById("emptyGridMsg");
+      grid.innerHTML = "";
+
+      const keys = Object.keys(videosCache);
+      if (keys.length === 0) {
+        emptyMsg.classList.remove("hidden");
+        return;
+      }
+      emptyMsg.classList.add("hidden");
+
+      keys.forEach(key => {
+        const item = videosCache[key];
+        const card = document.createElement("div");
+        card.className = "group cursor-pointer bg-darkCard border border-darkBorder hover:border-brand/60 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 glow-card flex flex-col";
+        
+        card.onclick = () => {
+          triggerRandomSmartLink();
+          playVideoById(key);
+        };
+
+        // Automatic clean video frame preview using #t=0.5 (No CORS error block)
+        card.innerHTML = `
+          <div class="aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+            <video 
+              src="${escapeHtml(item.streamUrl)}#t=0.5" 
+              preload="metadata" 
+              muted 
+              playsinline
+              class="w-full h-full object-cover pointer-events-none opacity-80 group-hover:opacity-100 group-hover:scale-105 transition duration-300">
+            </video>
+            <div class="absolute inset-0 bg-gradient-to-t from-darkCard via-transparent to-transparent"></div>
+            <div class="absolute w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 group-hover:text-brand group-hover:scale-110 transition">
+              <i class="fa-solid fa-play text-sm ml-0.5"></i>
+            </div>
+            <span class="absolute top-2 left-2 bg-black/80 border border-white/10 text-gray-300 text-[9px] font-bold px-1.5 py-0.5 rounded">
+              HD MP4
+            </span>
+          </div>
+          <div class="p-3 sm:p-4 flex flex-col justify-between flex-grow space-y-2">
+            <h4 class="text-xs sm:text-sm font-semibold text-gray-100 line-clamp-2 group-hover:text-brand transition" title="${escapeHtml(item.title)}">
+              ${escapeHtml(item.title)}
+            </h4>
+            <div class="flex justify-between items-center text-[10px] text-gray-500 pt-1.5 border-t border-darkBorder font-mono">
+              <span>STRIMHUB</span>
+              <span class="text-brand font-semibold flex items-center gap-1">
+                Watch <i class="fa-solid fa-chevron-right text-[8px]"></i>
+              </span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // =========================================================================
+    // RELIABLE PLAYBACK ENGINE & DIRECT VIDEO SHARING
+    // =========================================================================
+    function playVideoById(key) {
+      currentVideoKey = key;
+      currentVideo = videosCache[key];
+      if (!currentVideo) return;
+
+      // Update URL query parameters for direct sharing (?v=KEY)
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('v', key);
+      window.history.pushState({}, '', newUrl);
+
+      document.getElementById("homeView").classList.add("hidden");
+      document.getElementById("playerView").classList.remove("hidden");
+
+      document.getElementById("playerVideoTitle").innerText = currentVideo.title;
+      
+      const player = document.getElementById("streamPlayer");
+      player.pause();
+      player.removeAttribute("crossorigin"); // Ensures Archive.org direct MP4 plays without CORS blocking
+      player.src = currentVideo.streamUrl;
+      player.load();
+
+      // Show 320x50 Ad Overlay Container
+      document.getElementById("playerAdOverlay").classList.remove("hidden");
+      renderAdInsideContainer("playerAd320Container", adsConfig.playerAd, 320, 50);
+
+      renderRelatedVideos(key);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Direct touch gesture handler: Dismisses Ad, Triggers SmartLink, and Plays Video immediately
+    function closeAdAndPlayVideo() {
+      // 1. Trigger monetization link in new tab
+      triggerRandomSmartLink();
+
+      // 2. Hide overlay
+      document.getElementById("playerAdOverlay").classList.add("hidden");
+
+      // 3. Start HTML5 video playback directly in this user event
+      const player = document.getElementById("streamPlayer");
+      const playPromise = player.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn("Autoplay notice, muted attempt:", error);
+          // If browser policy blocks sound autoplay on mobile, start muted with controls visible
+          player.muted = true;
+          player.play();
+        });
+      }
+    }
+
+    // Direct Share Video Action
+    function shareCurrentVideo() {
+      const shareUrl = window.location.href;
+      if (navigator.share) {
+        navigator.share({
+          title: currentVideo ? currentVideo.title : 'STRIMHUB Stream',
+          text: 'Watch this stream on STRIMHUB!',
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        // Fallback: Copy to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            alert("Direct video link clipboard ma copy thai gai! Tame aane WhatsApp athva social media par share kari shako chho.");
+          }).catch(() => {
+            prompt("Copy this direct video share link:", shareUrl);
+          });
+        } else {
+          prompt("Copy this direct video share link:", shareUrl);
+        }
+      }
+    }
+
+    // Direct Download Action
+    function handleDownloadClick() {
+      triggerRandomSmartLink();
+      if (currentVideo && currentVideo.downloadUrl) {
+        setTimeout(() => {
+          window.open(currentVideo.downloadUrl, "_blank");
+        }, 200);
+      }
+    }
+
+    // Related Videos Grid (2 Columns as requested)
+    function renderRelatedVideos(currentKey) {
+      const container = document.getElementById("relatedVideosGrid");
+      container.innerHTML = "";
+      const keys = Object.keys(videosCache).filter(k => k !== currentKey);
+
+      if (keys.length === 0) {
+        container.innerHTML = `<p class="col-span-2 text-xs text-gray-500 py-4 text-center">No other streams available.</p>`;
+        return;
+      }
+
+      keys.forEach(k => {
+        const item = videosCache[k];
+        const card = document.createElement("div");
+        card.className = "flex gap-2.5 p-2 bg-darkCard border border-darkBorder hover:border-brand/40 rounded-xl cursor-pointer transition active:scale-95";
+        card.onclick = () => {
+          triggerRandomSmartLink();
+          playVideoById(k);
+        };
+
+        card.innerHTML = `
+          <div class="w-24 sm:w-28 aspect-video bg-black rounded-lg overflow-hidden relative shrink-0 flex items-center justify-center">
+            <video src="${escapeHtml(item.streamUrl)}#t=0.5" preload="metadata" muted playsinline class="w-full h-full object-cover pointer-events-none opacity-80"></video>
+            <i class="fa-solid fa-play text-white/80 text-xs absolute"></i>
+          </div>
+          <div class="flex flex-col justify-center min-w-0">
+            <h5 class="text-xs font-semibold text-gray-200 truncate hover:text-brand">${escapeHtml(item.title)}</h5>
+            <span class="text-[10px] text-gray-500 mt-1 font-mono">Related Stream</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function navigateHome() {
+      const player = document.getElementById("streamPlayer");
+      player.pause();
+      player.src = "";
+      
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete('v');
+      window.history.pushState({}, '', newUrl);
+
+      document.getElementById("playerView").classList.add("hidden");
+      document.getElementById("homeView").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Handle Browser Back / Forward buttons
+    window.addEventListener('popstate', () => {
+      const params = new URLSearchParams(window.location.search);
+      const vid = params.get('v');
+      if (vid && videosCache[vid]) {
+        playVideoById(vid);
+      } else {
+        navigateHome();
+      }
+    });
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str || '';
+      return d.innerHTML;
+    }
+
+    // Application Bootstrap on Load
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchAdsConfigFromFirebase();
+      fetchVideosFromFirebase();
+    });
+  </script>
+</body>
+</html>
